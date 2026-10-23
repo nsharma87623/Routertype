@@ -1,99 +1,75 @@
-import React from "react";
+
+import { useState } from 'react'
 import {
   HashRouter,
   MemoryRouter,
+  StaticRouter,
   Routes,
   Route,
   Link,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
+  useLocation
+} from 'react-router-dom'
 
-function Home() {
-  return (
-    <section>
-      <h2 className="text-xl font-bold text-slate-800">Home Page</h2>
-      <p className="mt-2 text-slate-600">Welcome! This is the home route.</p>
-    </section>
-  );
-}
-
-function About() {
-  return (
-    <section>
-      <h2 className="text-xl font-bold text-slate-800">About Page</h2>
-      <p className="mt-2 text-slate-600">This page demonstrates route navigation.</p>
-    </section>
-  );
-}
-
-function Contact() {
-  return (
-    <section>
-      <h2 className="text-xl font-bold text-slate-800">Contact Page</h2>
-      <p className="mt-2 text-slate-600">This is the contact route.</p>
-    </section>
-  );
-}
-
-function Navigation() {
-  const location = useLocation();
-  const navigate = useNavigate();
+function Pages() {
+  const location = useLocation()
 
   return (
-    <>
-      <nav className="flex flex-wrap gap-2">
-        <Link to="/">Home</Link>
-        {" | "}
-        <Link to="/about">About</Link>
-        {" | "}
-        <Link to="/contact">Contact</Link>
-      </nav>
-
-      <p>
-        Current pathname: <code>{location.pathname}</code>
+    <div className="mt-5 rounded-lg bg-blue-50 p-4">
+      <p className="font-bold text-blue-700">
+        Current Path: {location.pathname}
       </p>
-
-      <button onClick={() => navigate(-1)}>
-        Go Back
-      </button>
-    </>
-  );
-}
-
-function RouterDemo({ title }) {
-  return (
-    <div className="demo">
-      <h2>{title}</h2>
-      <Navigation />
-
+      <nav className="mt-4 flex gap-4 text-blue-600">
+        <Link to="/">Home</Link>
+        <Link to="/about">About</Link>
+      </nav>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route
-          path="*"
-          element={<h3 className="font-bold text-red-600">404 - Page Not Found</h3>}
-        />
+        <Route path="/" element={<h2 className="mt-4 text-xl">Home Page</h2>} />
+        <Route path="/about" element={<h2 className="mt-4 text-xl">About Page</h2>} />
       </Routes>
     </div>
-  );
+  )
 }
 
-export default function App() {
+ function App() {
+  const [type, setType] = useState('hash')
+
   return (
-    <main>
-      <h1 className="text-xl font-bold text-slate-800">React Router Demonstration</h1>
+    <div className="min-h-screen bg-gray-100 p-6">
+      <div className="mx-auto max-w-xl rounded-xl bg-white p-6 shadow-lg">
+        <h1 className="mb-5 text-center text-2xl font-bold text-blue-700">
+          React Router Types
+        </h1>
 
-      <HashRouter>
-        <RouterDemo title="HashRouter Demo" />
-      </HashRouter>
+        <select
+          value={type}
+          onChange={(e) => setType(e.target.value)}
+          className="w-full rounded-lg border p-3"
+        >
+          <option value="hash">HashRouter</option>
+          <option value="memory">MemoryRouter</option>
+          <option value="static">StaticRouter</option>
+        </select>
 
-      <hr />
+        {type === 'hash' && (
+          <HashRouter>
+            <Pages />
+          </HashRouter>
+        )}
 
-      <MemoryRouter initialEntries={["/"]}>
-        <RouterDemo title="MemoryRouter Demo" />
-      </MemoryRouter>
-    </main>
-  );
+        {type === 'memory' && (
+          <MemoryRouter>
+            <Pages />
+          </MemoryRouter>
+        )}
+
+        {type === 'static' && (
+          <StaticRouter location="/about">
+            <Pages />
+          </StaticRouter>
+        )}
+      </div>
+    </div>
+  )
 }
+
+export default App
